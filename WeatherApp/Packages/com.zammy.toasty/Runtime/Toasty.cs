@@ -20,14 +20,14 @@ namespace Toastylib
             sActivity.Call("runOnUiThread", new AndroidJavaRunnable(ShowToast));
         }
 
-        public static void ShowToast()
+        internal static void ShowToast()
         {
             Debug.Log("ShowToast");
             AndroidJavaObject context = sActivity.Call<AndroidJavaObject>("getApplicationContext");
-            AndroidJavaClass Toast = new AndroidJavaClass("android.widget.Toast");
+            AndroidJavaClass toast = new AndroidJavaClass("android.widget.Toast");
             AndroidJavaObject javaString = new AndroidJavaObject("java.lang.String", _messagesQueue.Dequeue());
-            AndroidJavaObject toast = Toast.CallStatic<AndroidJavaObject>("makeText", context, javaString, Toast.GetStatic<int>("LENGTH_SHORT"));
-            toast.Call("show");
+            AndroidJavaObject toastInstance = toast.CallStatic<AndroidJavaObject>("makeText", context, javaString, toast.GetStatic<int>("LENGTH_LONG"));
+            toastInstance.Call("show");
         }
 
         static Queue<string> _messagesQueue = new Queue<string>();
