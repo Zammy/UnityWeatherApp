@@ -1,0 +1,15 @@
+{
+  "name": "com.zammy.toasty",
+  "version": "1.0.0",
+  "displayName": "Android Toasty Package",
+  "description": "Simple API for Android toast message display",
+  "keywords": [
+    "android",
+    "toast"
+  ],
+  "author": {
+    "name": "Evgeni Petrov",
+    "email": "zammy@zammy.com",
+    "url": "https://github.com/Zammy/UnityWeatherApp"
+  }
+}
