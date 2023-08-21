@@ -56,7 +56,7 @@ ExportedObj/
 sysinfo.txt
 
 # Builds
-*.apk
+# *.apk
 *.aab
 *.unitypackage
 *.app
@@ -84,3 +84,4 @@ Logs/
 UserSettings/
 obj/
 Temp/
+build/
