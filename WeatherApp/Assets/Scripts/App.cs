@@ -13,45 +13,55 @@ public class App : MonoBehaviour
 
     void Start()
     {
+        Debug.Log("App.Start");
+
         GetWeatherReportButton.interactable = false;
         GetWeatherReportButton.onClick.AddListener(OnWeatherReportButtonClicked);
 
         StatusText.text = "Not Initialized";
-        StartCoroutine(InitLocationService());
+
+        _locationService = ServiceLocator.Instance.GetService<ILocationService>();
+        _locationService.OnStatusChanged += OnLocationServiceStatusChanged;
+        //we need low accuracy for weather report
+        _locationService.StartLocationSeeking(accuracyInMeters: 1000);
     }
 
     void OnDestroy()
     {
+        _locationService.OnStatusChanged -= OnLocationServiceStatusChanged;
+        _locationService.StopLocationSeeking();
+
         GetWeatherReportButton.onClick.RemoveAllListeners();
-        Input.location.Stop();
     }
 
-    IEnumerator InitLocationService()
+    void OnLocationServiceStatusChanged(LocationService.Status status)
     {
-        Input.location.Start();
-
-        if (!Input.location.isEnabledByUser)
+        switch (status)
         {
-            StatusText.text = "Location Service not enabled";
-            yield break;
+            case LocationService.Status.NotEnabledByUser:
+                {
+                    StatusText.text = "Location Service not enabled";
+                    break;
+                }
+            case LocationService.Status.Initializing:
+                {
+                    StatusText.text = "Location Service: Initializing";
+                    break;
+                }
+            case LocationService.Status.Failed:
+                {
+                    StatusText.text = "Location Service: Failed";
+                    break;
+                }
+            case LocationService.Status.Running:
+                {
+                    StatusText.text = "Location Service: Getting location";
+                    GetWeatherReportButton.interactable = true;
+                    break;
+                }
+            default:
+                break;
         }
-
-        var waitForASecond = new WaitForSeconds(1f);
-        while (Input.location.status == LocationServiceStatus.Initializing)
-        {
-            StatusText.text = "Location Service: Initializing";
-            yield return waitForASecond;
-        }
-
-        if (Input.location.status == LocationServiceStatus.Failed)
-        {
-            StatusText.text = "Location Service: Failed";
-            yield break;
-        }
-
-        StatusText.text = "Location Service: Getting location";
-
-        GetWeatherReportButton.interactable = true;
     }
 
     void OnWeatherReportButtonClicked()
@@ -183,4 +193,6 @@ public class App : MonoBehaviour
             default: return "";
         }
     }
+
+    ILocationService _locationService;
 }
