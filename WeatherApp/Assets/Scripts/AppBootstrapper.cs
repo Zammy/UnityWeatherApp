@@ -6,6 +6,6 @@ public class AppBootstrapper : Bootstrapper
 
         var serviceLocator = ServiceLocator.Instance;
         serviceLocator.RegisterService(new LocationService());
+        serviceLocator.RegisterService(new WeatherService());
     }
-
 }
